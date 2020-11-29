@@ -28,9 +28,15 @@ def test_show_my_pets():
     # Явное ожидание появления элементов на странице
     wait = WebDriverWait(pytest.driver, 5).until(EC.presence_of_all_elements_located(('id', 'all_my_pets')))
 
-    # Считаем кол-во питомцев на странице, проверяем, что все они есть на странице пользователя
+    # Считаем кол-во питомцев на странице, сверяем с количеством в профиле пользователя
     pets = pytest.driver.find_elements_by_xpath('//*[@id="all_my_pets"]/table/tbody/tr')
-    assert len(pets) == 2
+    leftdiv = pytest.driver.find_element_by_xpath('//div[@class=".col-sm-4 left"]').text
+    leftdivstr = str(leftdiv)
+    numbers = []
+    for s in leftdivstr.split():
+        if s.isdigit():
+            numbers.append(int(s))
+    assert len(pets) == numbers[0]
 
     # проверка, что у каждой карточки есть фото, имя питомца, его возраст).
     images = pytest.driver.find_elements_by_xpath('//*[@id="all_my_pets"]/table/tbody/tr/th/img')
